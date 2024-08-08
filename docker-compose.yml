@@ -1,0 +1,9 @@
+version: '3'
+services:
+  rf_analysis:
+    build: .
+    volumes:
+      - .:/app
+      - ./datasets:/app/datasets
+    ports:
+      - "8888:8888"

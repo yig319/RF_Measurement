@@ -11,11 +11,12 @@ class CapacitorAnalysis:
             raise ValueError('params is required')
             
     def setup_params(self, files_dict):
+        print('Setup parameters:')
 
         S = [None] * self.params['N']
         for file, k in files_dict.items():
             S[k] = rf.Network(file)
-        self.params['S'] = S
+        # self.params['S'] = S
 
         Freq = S[0].f
         FreqS = Freq / 1e9
@@ -41,12 +42,6 @@ class CapacitorAnalysis:
         S21m = 20 * np.log10(np.sqrt(S21r**2 + S21i**2))
         S22m = 20 * np.log10(np.sqrt(S22r**2 + S22i**2))        
         
-        # S11m = 20 * log10(sqrt(S11r.^2 + S11i.^2))
-        # S12m = 20 * log10(sqrt(S12r.^2 + S12i.^2))
-        # S21m = 20 * log10(sqrt(S21r.^2 + S21i.^2))
-        # S22m = 20 * log10(sqrt(S22r.^2 + S22i.^2))
-
-
         params_calculation = {'Freq': Freq, 'FreqS': FreqS, 'w': w,
                             'S11i': S11i, 'S12i': S12i, 'S21i': S21i, 'S22i': S22i,
                             'S11r': S11r, 'S12r': S12r, 'S21r': S21r, 'S22r': S22r,
@@ -57,7 +52,6 @@ class CapacitorAnalysis:
                             'S11m': S11m, 'S12m': S12m, 'S21m': S21m, 'S22m': S22m,}
         params_calculation.update(self.params)
         self.params = params_calculation
-        print('setup_parameters: Done')
         return params_calculation
 
 
@@ -141,6 +135,7 @@ class CapacitorAnalysis:
 
         
     def run_analysis(self):
+        print('Calculate:')
         
         # Unpack the necessary parameters
         Y12i, Y12r, Y11i, Y11r, w, FreqS = self.params['Y12i'], self.params['Y12r'], self.params['Y11i'], self.params['Y11r'], self.params['w'], self.params['FreqS']
