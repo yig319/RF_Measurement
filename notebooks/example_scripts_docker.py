@@ -1,10 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import sys
-sys.path.append('../src/')
-from rf_calculation import CapacitorAnalysis
-from rf_figures import FigureGenerator
+from src.rf_calculation import CapacitorAnalysis
+from src.rf_figures import FigureGenerator
 import matplotlib
 matplotlib.use('Agg')
 
@@ -16,10 +14,10 @@ params['N'] = len(params['V'])
 
 files_dict = {}
 for k in range(params['VoltMid'], params['N']):
-    File = f'../datasets/LYW034BTONSO25nm-0D16F200V2S-J/S2P/LYW034BTONSO25nm_0D16F200V2S_J_{params["V"][k]}V_dev.s2p'
+    File = f'/app/datasets/LYW034BTONSO25nm-0D16F200V2S-J/S2P/LYW034BTONSO25nm_0D16F200V2S_J_{params["V"][k]}V_dev.s2p'
     files_dict[File] = k     
 for k in range(params['VoltMid']):
-    File = f'../datasets/LYW034BTONSO25nm-0D16F200V2S-J/S2P/LYW034BTONSO25nm_0D16F200V2S_J_N{params["V"][params["N"]-1-k]}V_dev.s2p'
+    File = f'/app/datasets/LYW034BTONSO25nm-0D16F200V2S-J/S2P/LYW034BTONSO25nm_0D16F200V2S_J_N{params["V"][params["N"]-1-k]}V_dev.s2p'
     files_dict[File] = k
 
 analyzer = CapacitorAnalysis(params)

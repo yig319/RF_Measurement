@@ -1,5 +1,5 @@
 numpy
 matplotlib
 tqdm
-skrf
+scikit-rf
 h5py
