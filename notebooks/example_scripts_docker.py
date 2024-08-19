@@ -26,6 +26,13 @@ params_calculation = analyzer.setup_params(files_dict)
 # Calculation
 results = analyzer.run_analysis()
 
+# Merge dictionaries
+all_results = {}
+all_results.update(params)
+all_results.update(all_results)
+all_results.update(results)
+
+
 # Visualization parameters
 viz_params = {'VoltMax': 200, 'VoltStep': 2, 'DispIndex': 100, 'IDC_gap': 3e-4, 'CF': 0,
               'BVI': 101, 'FM': 26.5, 'FT': 32, 'LW': 1, 'QFSL': 10, 'QFSH': 10000, 'Cap3DL': 0.05, 'Cap3DH': 0.1,

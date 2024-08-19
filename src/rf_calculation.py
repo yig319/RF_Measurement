@@ -1,17 +1,36 @@
 import numpy as np
+import re
+import glob
 from scipy import signal
 from scipy.optimize import least_squares
 import skrf as rf
 from tqdm import tqdm
 
+def extract_voltage(filename):
+    # Extract the voltage value from the filename
+    match = re.search(r'_([N]?)(\d+)V_', filename)
+    if match:
+        sign = -1 if match.group(1) == 'N' else 1
+        return sign * int(match.group(2))
+    return 0  # Default to 0 if no match found
+    
 class CapacitorAnalysis:
     def __init__(self, params):
         self.params = params
         if params is None:
             raise ValueError('params is required')
-            
-    def setup_params(self, files_dict):
+    
+    def setup_params(self, folder_path):
         print('Setup parameters:')
+        
+        self.params['VoltMid'] = int(self.params['VoltMax'] / self.params['VoltStep'])
+        self.params['V'] = np.arange(-self.params['VoltMax'], self.params['VoltMax'] + self.params['VoltStep'], self.params['VoltStep'])
+        self.params['N'] = len(self.params['V'])
+        # params['Eff'] = (params['V'] / params['IDC_gap']) / 1000
+
+        files = glob.glob(folder_path+'/*.s2p')
+        sorted_files = sorted(files, key=extract_voltage)
+        files_dict = {file: i for i, file in enumerate(sorted_files)}
 
         S = [None] * self.params['N']
         for file, k in files_dict.items():
@@ -50,8 +69,7 @@ class CapacitorAnalysis:
                             'Z11i': Z11i, 'Z12i': Z12i, 'Z21i': Z21i, 'Z22i': Z22i,
                             'Z11r': Z11r, 'Z12r': Z12r, 'Z21r': Z21r, 'Z22r': Z22r,
                             'S11m': S11m, 'S12m': S12m, 'S21m': S21m, 'S22m': S22m,}
-        params_calculation.update(self.params)
-        self.params = params_calculation
+        self.params.update(params_calculation)
         return params_calculation
 
 
@@ -149,8 +167,7 @@ class CapacitorAnalysis:
         CQF = self.calculate_commutation_quality_factor(Y12i, Y12r, self.params['VoltMid'])
         QFMF, Vh, QFFiltVolt = self.calculate_peak_q_factor(QualityFactor, self.params['VoltMid'], self.params['V'], FreqS, self.params['VoltStep'])
         V_fit, C_fit, Cmax_fitted, V_half_fitted, Cf_fitted = self.fit_capacitance(Capacitance3D, self.params['V'], FreqS, self.params['DispIndex'])
-
-        return {'Capacitance3D': Capacitance3D,
+        results = {'Capacitance3D': Capacitance3D,
                 'CapacitanceMin': CapacitanceMin,
                 'Capacitance0Volt': Capacitance0Volt,
                 'Y12Conductance3D': Y12Conductance3D,
@@ -170,3 +187,7 @@ class CapacitorAnalysis:
                 'V_half_fitted': V_half_fitted,
                 'Cf_fitted': Cf_fitted
                 }
+        results.update(self.params)
+        
+
+        return results
