@@ -27,5 +27,9 @@ ENV PYTHONPATH=/app
 # Make port 8888 available to the world outside this container
 EXPOSE 8888
 
+# Set default values for input and output directories
+ENV INPUT_DIR=/app/input
+ENV OUTPUT_DIR=/app/output
+
 # Run the script when the container launches
-CMD ["python", "./notebooks/example_scripts_docker.py"]
+CMD python /app/example_scripts_docker.py $INPUT_DIR $OUTPUT_DIR
