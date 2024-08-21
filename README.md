@@ -34,7 +34,7 @@ This document provides step-by-step instructions for using the RF Analysis Docke
 3. Run the Docker container using the following command if you are in the base directory of this repo:
 
    ```
-   docker run -v "%CD%\datasets\LYW034BTONSO25nm-0D16F200V2S-J\S2P":/app/input -v "%CD%\output":/app/output rf_analysis
+   docker run -v /path/to/input:/data/input -v /path/to/output:/data/output yourusername/rf_measurement:latest --input_folder /data/input --output_folder /data/output
    ```
 
    This command does the following:
@@ -72,3 +72,20 @@ For any further questions or issues, please contact the maintainer of this Docke
    ```
    docker image prune
    ```
+
+
+## Using the Docker Image from DockerHub
+
+You can pull the latest version of the image from Docker Hub:
+
+```
+docker pull yourusername/rf_measurement:latest
+```
+
+To run the container:
+
+```
+docker run -v /path/to/input:/data/input -v /path/to/output:/data/output yourusername/rf_measurement:latest --input_folder /data/input --output_folder /data/output
+```
+
+Replace `/path/to/input` and `/path/to/output` with your actual input and output directory paths.
