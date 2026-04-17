@@ -1,8 +1,48 @@
 import h5py 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+def group_frequencies(df, group_size=10):
+    """
+    Groups frequency data but keeps the last few rows even if they don't form a full group.
+    """
+    freq_values = df.index.to_numpy()
+
+    # Compute number of full groups
+    new_freq_count = df.shape[0] // group_size
+
+    # Handle cases where the last group is smaller
+    remainder = df.shape[0] % group_size
+
+    if remainder > 0:
+        extra_rows = df.iloc[-remainder:].copy()  # Copy extra rows to modify
+        extra_freq_avg = np.mean(df.index[-remainder:])  # Calculate average frequency of extra rows
+        extra_rows.index = [extra_freq_avg] * remainder  # Assign average frequency index
+        
+    else:
+        extra_rows = None
+
+    # Trim and reshape the main portion
+    df_trimmed = df.iloc[:new_freq_count * group_size]
+    freq_trimmed = freq_values[:new_freq_count * group_size]
+
+    # Compute mean frequencies for full groups
+    grouped_frequencies = freq_trimmed.reshape(new_freq_count, group_size).mean(axis=1)
+
+    # Repeat frequency labels for each row in the group
+    repeated_freqs = np.repeat(grouped_frequencies, group_size)
+
+    # Assign new frequency index but keep all rows
+    df_grouped = df_trimmed.copy()
+    df_grouped.index = repeated_freqs
+
+    # Append remaining rows back
+    if extra_rows is not None:
+        df_grouped = pd.concat([df_grouped, extra_rows])
+
+    return df_grouped
 
 def save_dict_to_hdf5(dic, filename):
     with h5py.File(filename, 'w') as h5file:

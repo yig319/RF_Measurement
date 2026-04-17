@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import patheffects
 # import torch
-from utils import NormalizeData
+from rf_functions.utils import NormalizeData
 
 def create_axes_grid(n_plots, n_per_row, plot_height, n_rows=None, figsize='auto'):
     """

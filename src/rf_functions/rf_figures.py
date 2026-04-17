@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, Normalize
-from mpl_toolkits.mplot3d import Axes3D
 
 class FigureGenerator:
     def __init__(self, params, figsize, cmap):
